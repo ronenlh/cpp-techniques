@@ -14,23 +14,23 @@ using namespace std;
  *
  */
 
-void threadProc() {
+function<void()> threadProcess = []() {
 	for(auto i=0;i!=NUM_THREADS;++i) {
 		cout << "Message " << i << " from " << this_thread::get_id() << endl;
 	}
-}
+};
 
 int main()
 {
-	int i;
-	vector<thread> threads(NUM_THREADS);
+	vector<thread> threads;
 
-	for(i=0;i!=NUM_THREADS;++i)
-		threads[i]=thread(threadProc);		
+	for(auto i=0;i!=NUM_THREADS;++i)
+		threads.push_back(thread(threadProcess));		
 	
 
-	for(i=0;i!=NUM_THREADS;++i) 
-		threads[i].join();
-
+	for(thread &th : threads){
+		if(th.joinable())
+			th.join();
+	}
 	return 0;
 }
